@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "chunks — Postgres + pgvector table contract",
+  "description": "Authoritative shape of the `chunks` table the pipeline must produce. CI compares table columns and Postgres types against this contract exactly. The vector dimension is non-negotiable because it is dictated by the pinned embedding model (all-MiniLM-L6-v2 → 384).",
+  "table_name": "chunks",
+  "primary_key": ["id"],
+  "columns": [
+    {
+      "name": "id",
+      "pg_type": "bigint",
+      "nullable": false,
+      "description": "Surrogate chunk id. BIGSERIAL or GENERATED ALWAYS AS IDENTITY both acceptable."
+    },
+    {
+      "name": "doc_id",
+      "pg_type": "bigint",
+      "nullable": false,
+      "description": "Foreign key back to the source document (1..5000 in the synthetic corpus)."
+    },
+    {
+      "name": "chunk_text",
+      "pg_type": "text",
+      "nullable": false,
+      "description": "Literal text content of the chunk. MUST preserve memo codes verbatim — that is how the golden eval set finds its targets."
+    },
+    {
+      "name": "embedding",
+      "pg_type": "vector",
+      "vector_dim": 384,
+      "nullable": false,
+      "description": "Embedding produced by sentence-transformers/all-MiniLM-L6-v2 (384 dims). Vectors MUST be L2-normalised so cosine and inner-product searches give equivalent rankings."
+    },
+    {
+      "name": "tokens",
+      "pg_type": "integer",
+      "nullable": false,
+      "description": "Approximate token count of chunk_text. Cheap heuristic acceptable (word count, or tokenizer-based) — used as a guard against runaway chunks."
+    },
+    {
+      "name": "created_at",
+      "pg_type": "timestamp with time zone",
+      "nullable": false,
+      "description": "Insert timestamp. DEFAULT now() is acceptable. Used for observability, not for retrieval logic."
+    }
+  ],
+  "index": {
+    "name_pattern": "chunks_embedding_*_idx",
+    "kinds_accepted": ["ivfflat", "hnsw"],
+    "description": "An ANN index on `embedding` is recommended for realistic latency. The rubric does NOT enforce its presence (recall@5 on 5k docs is fast even with a sequential scan), but it is the difference between a portfolio piece and a real production pipeline."
+  }
+}

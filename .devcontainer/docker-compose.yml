@@ -1,0 +1,44 @@
+# Local services for the senior RAG project.
+#
+# Postgres 16 + pgvector — the only service the rubric depends on.
+# Ollama — optional, only useful if the learner wires `src/answer.py` to a
+# real LLM. The CI rubric NEVER calls Ollama (deterministic-by-design), so
+# learners who skip the answer-generation glue still pass all 6 checks.
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: rag-postgres
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: rag
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d rag"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  ollama:
+    # Optional — start with `docker compose --profile llm up -d` if you want to
+    # plug a real LLM into src/answer.py. The rubric does NOT need it.
+    image: ollama/ollama:0.4.7
+    container_name: rag-ollama
+    profiles: ["llm"]
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+
+volumes:
+  postgres_data:
+  ollama_data:

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iamdataeng-rag-pipeline-pgvector"
+version = "0.1.0"
+description = "IAmDataEng senior project — production-grade RAG pipeline on Postgres + pgvector with deterministic evaluation."
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "sentence-transformers==3.3.1",
+    "torch==2.5.1",
+    "numpy==1.26.4",
+    "sqlalchemy==2.0.36",
+    "psycopg2-binary==2.9.10",
+    "pgvector==0.3.6",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==8.3.4"]
+
+[tool.setuptools]
+packages = ["src", "fixtures", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

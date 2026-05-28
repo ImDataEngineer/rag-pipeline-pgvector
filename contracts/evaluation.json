@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "evaluation — retrieval metrics contract",
+  "description": "Shape of the dict returned by src/evaluate.py functions. The test suite imports these helpers — you do NOT need to reimplement them.",
+  "type": "object",
+  "definitions": {
+    "RetrievalResult": {
+      "type": "object",
+      "required": ["question", "expected_doc_id", "retrieved_doc_ids", "rank_of_expected"],
+      "properties": {
+        "question": { "type": "string" },
+        "expected_doc_id": { "type": "integer" },
+        "retrieved_doc_ids": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "Top-k doc_ids returned by the learner's retrieve.top_k_search(), in rank order (best first)."
+        },
+        "rank_of_expected": {
+          "type": ["integer", "null"],
+          "description": "1-based rank of expected_doc_id within retrieved_doc_ids, or null if not in the top-k."
+        }
+      }
+    },
+    "Metrics": {
+      "type": "object",
+      "required": ["recall_at_k", "mrr", "k", "n_queries"],
+      "properties": {
+        "recall_at_k": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "mrr": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "k": { "type": "integer", "minimum": 1 },
+        "n_queries": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}
