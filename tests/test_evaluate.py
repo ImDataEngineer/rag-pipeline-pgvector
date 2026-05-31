@@ -445,3 +445,66 @@ def test_hallucination_gate_triggers(pipeline_executed):
             "  - si tu retournes toujours quelque chose 'au cas où', SUPPRIME ce\n"
             "    comportement. Refuser de répondre est un feature, pas un bug."
         )
+
+
+# ---------------------------------------------------------------------------
+# Check 7 — gate_not_overzealous (symmetric: in-domain must NOT be refused
+#           wholesale just to pass the OOD test)
+# ---------------------------------------------------------------------------
+
+
+def test_gate_does_not_refuse_in_domain(pipeline_executed):
+    """Symétrique du check 6 : sur les 50 questions golden in-domain,
+    `generate_answer()` doit répondre dans la grande majorité des cas.
+
+    Sans ce test, un learner peut « passer » le hallucination gate en
+    fixant son seuil à 1.0 (refuse TOUT). Le système devient inutile en
+    prod : aucune réponse, jamais. Cette asymétrie est la fail mode
+    classique des RAG productifs.
+
+    Seuil retenu : au moins 40/50 réponses (80 %). En-dessous, ton seuil
+    de confiance est trop dur, OU ton retriever ne récupère pas les bons
+    chunks pour les questions in-domain (problème de chunking ou
+    d'embedding).
+    """
+    from src.answer import LowConfidenceRetrievalError, generate_answer
+    from src.embed import load_model
+
+    engine = pipeline_executed
+    with GOLDEN_PATH.open("r", encoding="utf-8") as f:
+        golden = json.load(f)
+
+    model = load_model()
+    refused = 0
+    answered = 0
+    with engine.connect() as conn:
+        for item in golden:
+            q = item["question"]
+            try:
+                ans = generate_answer(q, conn, model=model)
+            except LowConfidenceRetrievalError:
+                refused += 1
+                continue
+            except NotImplementedError as e:
+                pytest.fail(
+                    "generate_answer() lève NotImplementedError. Implémente-la "
+                    f"dans src/answer.py.\n  Détail : {e}"
+                )
+            if ans is None or (isinstance(ans, str) and ans.strip() == ""):
+                refused += 1
+            else:
+                answered += 1
+
+    n = len(golden)
+    if answered < 40:
+        pytest.fail(
+            f"Le hallucination gate refuse trop : seulement {answered}/{n} "
+            "réponses sur les questions in-domain (seuil mini : 40/50).\n"
+            "Symptôme classique : ton seuil de confiance est calé pour passer le "
+            "test OOD (check 6) mais il refuse aussi les vraies questions.\n"
+            "Pistes :\n"
+            "  - calibrer le seuil en regardant la distribution des scores top-1\n"
+            "    sur les questions in-domain (médiane vs seuil).\n"
+            "  - si recall@5 est faible aussi (check 4), c'est le retriever qui\n"
+            "    rate, pas le seuil."
+        )
