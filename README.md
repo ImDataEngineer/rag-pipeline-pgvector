@@ -1,3 +1,9 @@
+> *Also available in [French](./README.fr.md).*
+
+[![Template](https://img.shields.io/badge/repo-template-1e293b?style=flat-square)](https://github.com/ImDataEngineer/rag-pipeline-pgvector/generate) [![iamdataeng.com](https://img.shields.io/badge/iamdataeng.com-2563eb?style=flat-square)](https://iamdataeng.com/projects/transformation.rag-pipeline-pgvector)
+
+> **Context.** Coursework template from [iamdataeng.com/projects/transformation.rag-pipeline-pgvector](https://iamdataeng.com/projects/transformation.rag-pipeline-pgvector). Fork, complete the TODO blocks, push, receive a pedagogical CI verdict. Not a maintained open-source project, an evaluated exercise.
+
 # A production-grade RAG pipeline, measured — `transformation.rag-pipeline-pgvector`
 
 > **Level**: senior · **Estimated time**: ~12 h · **Price**: €49
@@ -67,7 +73,7 @@ pipeline, not on the metric formulas.
 
 ## Getting started
 
-In Codespaces (one-click open from the IAmDataEng app), the post-create
+In Codespaces (one-click open from the IamDataEngineer app), the post-create
 installs dependencies, starts Postgres+pgvector, pre-downloads the
 sentence-transformers model, and generates the fixtures. So you only
 have to code.
@@ -213,6 +219,6 @@ struggle is what the investment covers.
    probably the model version. Verify that `EMBEDDING_MODEL` is set to
    `sentence-transformers/all-MiniLM-L6-v2`.
 5. Open an issue on your fork with the `help-wanted` label — the
-   IAmDataEng community hangs out there.
+   IamDataEngineer community hangs out there.
 
 Good luck.

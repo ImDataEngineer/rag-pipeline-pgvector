@@ -1,3 +1,9 @@
+> *Aussi disponible en [anglais](./README.md).*
+
+[![Template](https://img.shields.io/badge/repo-template-1e293b?style=flat-square)](https://github.com/ImDataEngineer/rag-pipeline-pgvector/generate) [![iamdataeng.com](https://img.shields.io/badge/iamdataeng.com-2563eb?style=flat-square)](https://iamdataeng.com/projects/transformation.rag-pipeline-pgvector)
+
+> **Contexte.** Template pédagogique de [iamdataeng.com/projects/transformation.rag-pipeline-pgvector](https://iamdataeng.com/projects/transformation.rag-pipeline-pgvector). Fork, complète les TODO, push, reçois un verdict CI pédagogique. Pas un projet open source maintenu, un exercice évalué.
+
 # Un pipeline RAG production-grade, mesuré — `transformation.rag-pipeline-pgvector`
 
 > **Niveau** : senior · **Durée estimée** : ~12 h · **Tarif** : 49 €
@@ -23,7 +29,7 @@ interview RAG en 2026 — et c'est ce que la plupart des candidats foirent.
 
 ## Le contexte
 
-Lumora Stock est une SaaS B2B de gestion de stock. Leur équipe support a
+Lumora Stock est un SaaS B2B de gestion de stock. Leur équipe support a
 accumulé **5 000 articles** (FAQ, troubleshooting, how-to, changelogs) sur
 quatre ans. L'équipe perd 4 h/jour à rechercher manuellement des réponses
 déjà documentées.
@@ -66,7 +72,7 @@ sur la formule des métriques.
 
 ## Comment commencer
 
-En Codespaces (ouverture en un clic depuis l'app IAmDataEng), le
+En Codespaces (ouverture en un clic depuis l'app IamDataEngineer), le
 post-create installe les dépendances, démarre Postgres+pgvector, pré-télécharge
 le modèle sentence-transformers, et génère les fixtures. Donc tu n'as qu'à
 coder.
@@ -211,6 +217,6 @@ recouvre l'investissement.
    probablement la version du modèle. Vérifie que `EMBEDDING_MODEL` est
    bien `sentence-transformers/all-MiniLM-L6-v2`.
 5. Ouvre une issue dans ton fork avec le label `help-wanted` — la
-   communauté IAmDataEng y passe.
+   communauté IamDataEngineer y passe.
 
 Bonne route.
